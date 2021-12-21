@@ -6,19 +6,23 @@ const signToken = userID => {
   return JWT.sign({
     iss: 'Mavi.co',
     sub: userID
-  }, process.env.JWT_SECRET_KEY, { expiresIn: '2h' })
+  }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
 }
 
 exports.createUser = (req, res) => {
   const { username, password } = req.body
   User.findOne({ username }, (err, user) => {
-    if (err) res.status(500).json({ message: { msgBody: 'Error occured', msgError: true } })
-    if (user) res.status(400).json({ message: { msgBody: 'Username already taken', msgError: true } })
+    if (err)
+      return res.status(500).json({ message: { msgBody: 'Error occured', msgError: true } })
+    if (user)
+      return res.status(400).json({ message: { msgBody: 'Username already taken', msgError: true } })
     else {
       const newUser = new User({ username, password })
       newUser.save(err => {
-        if (err) res.status(500).json({ message: { msgBody: 'Error occured', msgError: true } })
-        else res.status(201).json({ message: { msgBody: 'Account created succesfully', msgError: false } })
+        if (err)
+          return res.status(500).json({ message: { msgBody: 'Error occured', msgError: true } })
+        else
+          return res.status(201).json({ message: { msgBody: 'Account created succesfully', msgError: false } })
       })
     }
   })

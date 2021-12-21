@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  googleId: String,
   username: {
     type: String,
     required: [true, "You can not leave the username field empty."],
@@ -19,7 +20,7 @@ const userSchema = new Schema({
   role: {
     type: String,
     enum: ['user', 'admin', 'super_admin'],
-    required: [true, "You can not leave the role field empty."],
+    required: true,
     default: 'user'
   },
   todos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Todo' }]
@@ -39,7 +40,7 @@ userSchema.pre('save', function (next) {
 
 userSchema.methods.comparePassword = function (password, cb) {
   var user = this
-  bcrypt.compare(password, this.password, (err, isMatch) => {
+  bcrypt.compare(password, user.password, (err, isMatch) => {
     if (err)
       cb(err)
     else {
